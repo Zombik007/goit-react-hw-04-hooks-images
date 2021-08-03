@@ -22,6 +22,7 @@ export default class ImageApiService {
     return fetch(url)
       .then(response => response.json())
       .then(data => {
+        console.log(this.page);
         return data.hits;
       });
   }

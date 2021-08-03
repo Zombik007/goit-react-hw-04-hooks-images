@@ -12,7 +12,7 @@ import Loader from '../Loader';
 const imageApiService = new ImagesApiService();
 
 export default function ImageGallery({ imageName, modalContent, openModal }) {
-  const [images, setImages] = useState([]);
+  const [images, setImages] = useState(null);
   const [error, setError] = useState(null);
   const [status, setStatus] = useState('idle');
   const [loading, setLoading] = useState(false);
@@ -21,7 +21,7 @@ export default function ImageGallery({ imageName, modalContent, openModal }) {
     if (!imageName) {
       return;
     }
-
+    imageApiService.resetPage();
     setLoading(true);
     setStatus('pending');
 
