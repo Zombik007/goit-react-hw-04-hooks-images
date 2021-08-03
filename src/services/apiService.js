@@ -22,9 +22,12 @@ export default class ImageApiService {
     return fetch(url)
       .then(response => response.json())
       .then(data => {
-        this.page += 1;
         return data.hits;
       });
+  }
+
+  changePage() {
+    this.page += 1;
   }
 
   resetPage() {

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { createPortal } from 'react-dom';
@@ -7,42 +7,35 @@ import styles from './Modal.module.css';
 
 const lightboxRoot = document.querySelector('#lightbox-root');
 
-export default class Lightbox extends Component {
-  static propTypes = {
-    onClose: PropTypes.func.isRequired,
-    modalContent: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired,
-  };
-
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
-
-  handleKeyDown = e => {
-    if (e.code === 'Escape') {
-      this.props.onClose();
+export default function Lightbox({ onClose, children }) {
+  useEffect(() => {
+    function handleKeyDown(e) {
+      if (e.code === 'Escape') {
+        onClose();
+      }
     }
-  };
 
-  handleBackdropClick = e => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
+
+  const handleBackdropClick = e => {
     if (e.currentTarget === e.target) {
-      this.props.onClose();
+      onClose();
     }
   };
 
-  render() {
-    return createPortal(
-      <div
-        className={styles.Lightbox__backdrop}
-        onClick={this.handleBackdropClick}
-      >
-        <div className={styles.Lightbox__content}>{this.props.children}</div>
-      </div>,
-      lightboxRoot,
-    );
-  }
+  return createPortal(
+    <div className={styles.Lightbox__backdrop} onClick={handleBackdropClick}>
+      <div className={styles.Lightbox__content}>{children}</div>
+    </div>,
+    lightboxRoot,
+  );
 }
+
+Lightbox.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
+};
